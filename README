@@ -1,0 +1,19 @@
+pymongoose
+-------------------------
+
+Pymongoose is a wrapper around pymongo - the python driver for MongoDB. 
+The main motivation behind it was to find a way to define and maintain a schema in your application
+in order to manipulate data. 
+
+The reason behind the name is that it is partially inspired from mongoose, the mongo library for NodeJS.
+
+Usage
+-----------------------
+
+Place in in your PYTHONPATH and, as a package, you can access it from any python application.
+
+More details on usage coming soon
+
+
+
+
