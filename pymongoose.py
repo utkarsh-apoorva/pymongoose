@@ -15,6 +15,7 @@
 	#                                								#
 	#################################################################################################
 
+<<<<<<< HEAD
  
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -22,6 +23,13 @@ from bson.objectid import ObjectId
 
 def Connection(_DATABASE):
   print "init Connection"
+=======
+  
+
+def Connection(_DATABASE):
+  print "init Connection"
+  from pymongo import MongoClient
+>>>>>>> 9200fe64c5e407e77af524a99a71ac555ff4497f
   global db 
   db = MongoClient()[_DATABASE]
   return db
@@ -78,6 +86,7 @@ class Collection(object):
       raise Exception('Fields do not match schema at key: '+key)
     self.db[self.collectionName].insert(data)
 
+<<<<<<< HEAD
   def update(self, data):
     match, key = self.keyMatch(data, self.schema)
     if not match:
@@ -88,10 +97,18 @@ class Collection(object):
     d = []
     if (data=='all'): data = self.db[self.collectionName].find()
     else: data = self.db[self.collectionName].find(data)
+=======
+
+
+  def find(self, data):
+    d = []
+    data = self.db[self.collectionName].find(data)
+>>>>>>> 9200fe64c5e407e77af524a99a71ac555ff4497f
     for i in data:
       d.append(i)
     return d
 
+<<<<<<< HEAD
   def findOne(self, data='all'):    
     d = []
     if (data=='all'): data = self.db[self.collectionName].find()
@@ -101,6 +118,14 @@ class Collection(object):
     if len(d)>0:
       return d[0]
     return {}
+=======
+  def findOne(self, data):    
+    d = []
+    data = self.db[self.collectionName].find(data)
+    for i in data:
+      d.append(i)
+    return d[0]
+>>>>>>> 9200fe64c5e407e77af524a99a71ac555ff4497f
  
   def remove(self, data):
     self.db[self.collectionName].remove(data)
