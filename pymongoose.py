@@ -21,10 +21,10 @@ from bson.objectid import ObjectId
  
 
 def Connection(_DATABASE):
-  print "init Connection"
   from pymongo import MongoClient
   global db 
   db = MongoClient()[_DATABASE]
+  print "Connection created with "+_DATABASE+" ..."
   return db
 
 
@@ -44,12 +44,18 @@ class Collection(object):
     global mismatch  
     res = True
     mismatch = ''
+    custom_keys=0
+    for k in schema.keys():
+      if bool(re.match("^__\w*__$", k)):
+        custom_keys++
     for f in data.keys():
-      if (f not in schema):
+      if ((f not in schema) and (custom_keys<=0):
         print f+" not found in schema"
         res = False
         mismatch = f
         return res, mismatch
+      else: custom_keys--
+      # For array of objects within the schema. Nested arrays not supported and not recommended in Mongo
       if (isinstance(data[f], list)):
         if (isinstance(schema[f], list)):
           for d in data[f]:
