@@ -18,7 +18,7 @@
  
 from pymongo import MongoClient
 from bson.objectid import ObjectId
- 
+import re 
 
 def Connection(_DATABASE):
   from pymongo import MongoClient
@@ -30,8 +30,9 @@ def Connection(_DATABASE):
 
 class Collection(object):
 
-  def __init__(self, _db, _name, _schema):
-    self.schema = _schema
+  def __init__(self, _db, _name, _schema=None):
+    if (_schema): 
+      self.schema = _schema
     self.db = _db
     self.collectionName = _name
       
@@ -47,14 +48,16 @@ class Collection(object):
     custom_keys=0
     for k in schema.keys():
       if bool(re.match("^__\w*__$", k)):
-        custom_keys++
+        custom_keys += 1
+    print custom_keys
     for f in data.keys():
-      if ((f not in schema) and (custom_keys<=0):
+      if ((f not in schema) and (custom_keys<=0)):
         print f+" not found in schema"
         res = False
         mismatch = f
         return res, mismatch
-      else: custom_keys--
+      elif ((f not in schema) and (custom_keys>0)):
+        custom_keys -=1
       # For array of objects within the schema. Nested arrays not supported and not recommended in Mongo
       if (isinstance(data[f], list)):
         if (isinstance(schema[f], list)):
@@ -72,18 +75,22 @@ class Collection(object):
       if ((type(data[f]) is dict)):
         if (type(schema[f]) is dict):
           self.keyMatch(data[f], schema[f])
+        elif (custom_keys>0):
+          custom_keys -=1
         else:
           res = False
           mismatch = f
           return res, mismatch
     return res, mismatch
-
- 
-  def insert(self, data):
-    match, key = self.keyMatch(data, self.schema)
-    if not match:
-      raise Exception('Fields do not match schema at key: '+key)
+  
+   
+  def insert(self, data, check=True):
+    if (check):
+      match, key = self.keyMatch(data, self.schema)
+      if not match:
+        raise Exception('Fields do not match schema at key: '+key)
     self.db[self.collectionName].insert(data)
+    print 'Successfully inserted data'
 
   def update(self, data):
     match, key = self.keyMatch(data, self.schema)
